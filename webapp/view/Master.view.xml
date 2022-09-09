@@ -1,0 +1,937 @@
+<mvc:View controllerName="ZSPCE_RF_APRV.ZSPCE_RF_APRV.controller.Master" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	xmlns:layout="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:u="sap.ui.unified" xmlns:semantic="sap.m.semantic"
+	xmlns:html="http://www.w3.org/1999/xhtml" width="100%">
+	<Shell id="shell">
+		<App id="app">
+			<pages>
+				<Page id="page" title="{i18n>title}" titleLevel="H2" showHeader="false" showFooter="false">
+					<content>
+						<!---->
+						<!---->
+						<u:SplitContainer id="SplitContainer" showSecondaryContent="true" secondaryContentSize="27%">
+							<u:secondaryContent>
+								<semantic:MasterPage backgroundDesign="List">
+									<PullToRefresh id="pullToRefreshList" visible="{device>/isTouch}" refresh="onListF5"/>
+									<List id="reqList" mode="SingleSelectMaster" itemPress="reqShow" items="{oReqList>/}" busyIndicatorDelay="500" enableBusyIndicator="true"
+										noDataText="No Requests available">
+										<headerToolbar>
+											<Toolbar>
+												<ToolbarSpacer/>
+												<Title text="SPCE Refund Requests ({oCount>/ReqList})" level="H3"/>
+												<ToolbarSpacer/>
+											</Toolbar>
+										</headerToolbar>
+										<infoToolbar>
+											<Toolbar active="true">
+												<SearchField liveChange=".onSearch" width="100%"/>
+											</Toolbar>
+										</infoToolbar>
+										<StandardListItem title="{oReqList>student12}: {oReqList>name}" info="{oReqList>form_date}" tooltip="{oReqList>name}"
+											description="Appli. No.:{oReqList>form_id}" iconDensityAware="false" iconInset="false" type="Active"/>
+									</List>
+									<semantic:customFooterContent>
+										<Button id="refList" type="Transparent" icon="sap-icon://synchronize" tooltip="Refresh" press="onListF5" visible="{device>/isNoTouch}"></Button>
+									</semantic:customFooterContent>
+								</semantic:MasterPage>
+							</u:secondaryContent>
+							<u:content>
+								<!---->
+								<semantic:DetailPage id="DetailPageContent" title="Refund Request Review" titleLevel="H2" floatingFooter="true" showNavButton="false"
+									navButtonPress="handleToggleSecondaryContent"
+									class="sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer sapUiResponsivePadding--floatingFooter">
+									<Button text="" icon="sap-icon://paging" type="Default" class="sapUiNoMargin" press="handleToggleSecondaryContent"/>
+									<Panel id="stPnlHeader" expandable="true" expanded="true" expand="onExpand" width="auto" class="sapUiResponsiveMargin"
+										backgroundDesign="Solid" headerText="{RFHeader>/rfid} / {RFHeader>/student12}: {RFHeader>/st_name}">
+										<headerToolbar>
+											<OverflowToolbar active="false">
+												<Title text="{oSTHeaderData>/form_id}/{oSTHeaderData>/student12}: {oSTHeaderData>/st_name}"/>
+												<ToolbarSpacer/>
+											</OverflowToolbar>
+										</headerToolbar>
+										<content>
+											<!---->
+											<f:Form>
+												<f:layout>
+													<f:ResponsiveGridLayout labelSpanXL="5" labelSpanL="5" labelSpanM="12" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="0"
+														emptySpanL="0" emptySpanM="0" emptySpanS="0" columnsXL="3" columnsL="3" columnsM="2" singleContainerFullSize="false"/>
+												</f:layout>
+												<f:FormContainer>
+													<f:formElements>
+														<f:FormElement label="{i18n>lblCampusName}">
+															<f:fields>
+																<Text text="{oSTHeaderData>/campus}" emptyIndicatorMode="On"/>
+															</f:fields>
+														</f:FormElement>
+														<f:FormElement label="{i18n>lblLC}">
+															<Text text="{oSTHeaderData>/lc}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+													</f:formElements>
+												</f:FormContainer>
+												<f:FormContainer>
+													<f:formElements>
+														<f:FormElement label="{i18n>lblDepartment}">
+															<Text text="{oSTHeaderData>/depart}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+														<f:FormElement label="{i18n>lblProgramName}">
+															<Text text="{oSTHeaderData>/program}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+														<f:FormElement label="{i18n>lblIntakeNo}">
+															<Text text="{oSTHeaderData>/intake}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+													</f:formElements>
+												</f:FormContainer>
+												<f:FormContainer>
+													<f:formElements>
+														<f:FormElement label="{i18n>lblCourse}">
+															<Text text="{oSTHeaderData>/course}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+														<f:FormElement label="{i18n>lblBEGDA}">
+															<Text text="{oSTHeaderData>/begda}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+														<f:FormElement label="{i18n>lblENDDA}">
+															<Text text="{oSTHeaderData>/endda}" emptyIndicatorMode="On"/>
+														</f:FormElement>
+													</f:formElements>
+												</f:FormContainer>
+											</f:Form>
+											<!---->
+											<!---->
+										</content>
+									</Panel>
+									<IconTabBar id="TabBar" expanded="true" class="sapUiResponsiveContentPadding" select="onSelect">
+										<items>
+											<!--Student-->
+											<!--sap-icon://request
+											sap-icon://approvals
+											sap-icon://payment-approval
+											sap-icon://study-leave
+											sap-icon://monitor-payments-->
+											<IconTabFilter id="reqTabBar" key="1" icon="sap-icon://request" iconColor="Default" text="SSO">
+												<f:Form id="formInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="2" columnsL="2" columnsM="2"
+															singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel id="pnlAcademic" width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Academic Information"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<f:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="7" labelSpanL="7" labelSpanM="7" labelSpanS="7"
+																		adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+																		singleContainerFullSize="false">
+																		<f:content>
+																			<Label labelFor="sydatum" text="{i18n>lblApplyDate}"/>
+																			<DatePicker id="sydatum" placeholder="Date required" value="{oWithdrawal>/sydate}" textAlign="Left" displayFormat="long"
+																				secondaryCalendarType="Islamic" required="true" valueFormat="yyyy-MM-dd" editable="false">
+																				<layoutData>
+																					<layout:GridData span="L4 M4 S4"/>
+																				</layoutData>
+																			</DatePicker>
+																			<Label labelFor="TotModHours" text="{i18n>lblTotModHours}"/>
+																			<Input id="TotModHours" type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours}" required="true" editable="false">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="TotModHoursCompleted" text="{i18n>lblTotModHoursCompleted}"/>
+																			<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours_comp}" required="true" submit="onHoursCal" editable="false">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="ModHourCompPerc" text="{i18n>lblModHourCompPerc}"/>
+																			<Input id="ModHourCompPerc" type="Number" editable="false" value="{oWithdrawal>/mod_hour_comp_perc}" required="true">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="WithdrwTyp" text="{i18n>lblWithdrwTyp}"/>
+																			<Text id="WithdrwTyp" text="{oWithdrawal>/wthdrw_typ_txt}" emptyIndicatorMode="On">
+																				<layoutData>
+																					<layout:GridData span="L5 M5 S5"/>
+																				</layoutData>
+																			</Text>
+																		</f:content>
+																	</f:SimpleForm>
+																</Panel>
+															</f:FormElement>
+															<f:FormElement>
+																<Panel id="pnlOutstand" width="auto" backgroundDesign="Solid">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Information on other outstanding debts"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<Table id="OutstandTab" growing="true" growingThreshold="5" enableBusyIndicator="true" alternateRowColors="true"
+																		items="{ path: 'outstandDebtTab>/', sorter: { path: 'course_code' } }" noDataText="Courses not found" class="sapUiNoContentPadding">
+																		<headerToolbar>
+																			<!--<OverflowToolbar>-->
+																			<!--<Title text="{i18n>lblProposedRefund}" level="H2"/>-->
+																			<!--	<ToolbarSpacer/>-->
+																			<!--</OverflowToolbar>-->
+																		</headerToolbar>
+																		<columns>
+																			<Column sortIndicator="Ascending">
+																				<Text text="Course Code"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Course Description"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Intake #"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Outstanding Debt"/>
+																			</Column>
+																		</columns>
+																		<items>
+																			<ColumnListItem vAlign="Middle">
+																				<cells></cells>
+																			</ColumnListItem>
+																		</items>
+																	</Table>
+																</Panel>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+													<f:FormContainer>
+														<f:FormElement>
+															<Panel id="pnlFin" width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																<headerToolbar>
+																	<OverflowToolbar active="false">
+																		<Title text="Finance Information"/>
+																		<ToolbarSpacer/>
+																	</OverflowToolbar>
+																</headerToolbar>
+																<f:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="6" labelSpanL="6" labelSpanM="6" labelSpanS="6"
+																	adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+																	singleContainerFullSize="false">
+																	<f:content>
+																		<Label labelFor="RFType" text="{i18n>lblRFType}"/>
+																		<Input id="RFType" type="Number" value="{oWithdrawal>/rf_type}" required="true" placeholder="RF Type" showValueHelp="true"
+																			valueHelpOnly="true" valueHelpRequest=".onF4RFType" editable="false">
+																			<layoutData>
+																				<layout:GridData span="L3 M3 S3"/>
+																			</layoutData>
+																		</Input>
+																		<Label labelFor="TuitionFee" text="{i18n>lblTuitionFee}"/>
+																		<Text id="TuitionFee"
+																			text="{ parts: ['oWithdrawal>/tuit_fee', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="PaidAmount" text="{i18n>lblPaidAmount}"/>
+																		<Text id="PaidAmount"
+																			text="{ parts: ['oWithdrawal>/paid_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="OutstandingBal" text="{i18n>lblOutstandingBal}"/>
+																		<Text id="OutstandingBal"
+																			text="{ parts: ['oWithdrawal>/outstand_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="TUITRevrAmt" text="{i18n>lblTUITRevrAmt}"/>
+																		<Text id="TUITRevrAmt"
+																			text="{ parts: ['oWithdrawal>/tuit_revr_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="RFEntit" text="{i18n>lblRFEntit}"/>
+																		<Text id="RFEntit"
+																			text="{ parts: ['oWithdrawal>/rf_entit', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="RemainDebtAfterRevr" text="{i18n>lblRemainDebtAfterRevr}"/>
+																		<Text id="RemainDebtAfterRevr"
+																			text="{ parts: ['oWithdrawal>/debt_after_revr', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																	</f:content>
+																</f:SimpleForm>
+															</Panel>
+														</f:FormElement>
+														<f:FormElement>
+															<Panel id="pnlRefund" width="auto" backgroundDesign="Solid">
+																<headerToolbar>
+																	<OverflowToolbar active="false">
+																		<Title text="In case of Refund entitlement"/>
+																		<ToolbarSpacer/>
+																	</OverflowToolbar>
+																</headerToolbar>
+																<f:SimpleForm layout="ColumnLayout" labelSpanXL="8" labelSpanL="8" labelSpanM="8" labelSpanS="8" adjustLabelSpan="true" emptySpanXL="1"
+																	emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
+																	<f:content>
+																		<Label text="Request from student" labelFor="stReq">
+																			<layoutData>
+																				<layout:GridData span="L7 M7 S7" indentL="0"/>
+																			</layoutData>
+																		</Label>
+																		<RadioButtonGroup id="stReq" valueState="Information" columns="1" selectedIndex="{oWithdrawal>/st_req}" select="onRBGSelect"
+																			editable="false">
+																			<buttons>
+																				<RadioButton text="Refund" groupName="stReq"/>
+																				<RadioButton text="Student Advance" groupName="stReq"/>
+																				<RadioButton text="No Request" groupName="stReq"/>
+																			</buttons>
+																			<layoutData>
+																				<layout:GridData span="L1 M1 S1"/>
+																			</layoutData>
+																		</RadioButtonGroup>
+																	</f:content>
+																</f:SimpleForm>
+															</Panel>
+														</f:FormElement>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+												<f:Form id="othInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" emptySpanXL="1" emptySpanL="1" emptySpanM="1"
+															emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement label="Remarks">
+																<!--<Label text="Remarks" labelFor="remarks">-->
+																<!--	<layoutData>-->
+																<!--		<layout:GridData span="L7 M7 S7" indentL="0"/>-->
+																<!--	</layoutData>-->
+																<!--</Label>-->
+																<f:fields>
+																	<TextArea id="remarks" placeholder="Enter Remarks.." rows="8" growing="true" growingMaxLines="20" width="100%" required="true"
+																		value="{oWithdrawal>/remarks}" editable="false"/>
+																</f:fields>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+											</IconTabFilter>
+											<IconTabSeparator icon="sap-icon://process"/>
+											<IconTabFilter id="ACMTabBar" key="2" icon="sap-icon://approvals" iconColor="Critical" text="AC Manager" count="{oSTHeaderData>/days_acm}"
+												tooltip="{RFHeader>/days_apr1} days">
+												<f:Form id="ACMFormInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="2" columnsL="2" columnsM="2"
+															singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Academic Information"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<f:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="7" labelSpanL="7" labelSpanM="7" labelSpanS="7"
+																		adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+																		singleContainerFullSize="false">
+																		<f:content>
+																			<Label labelFor="sydatum" text="{i18n>lblApplyDate}"/>
+																			<DatePicker placeholder="Date required" value="{oWithdrawal>/sydate}" textAlign="Left" displayFormat="long" secondaryCalendarType="Islamic"
+																				required="true" valueFormat="yyyy-MM-dd" editable="{oTab2>/editable}">
+																				<layoutData>
+																					<layout:GridData span="L4 M4 S4"/>
+																				</layoutData>
+																			</DatePicker>
+																			<Label labelFor="TotModHours" text="{i18n>lblTotModHours}"/>
+																			<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours}" required="true" editable="{oTab2>/editable}">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="TotModHoursCompleted" text="{i18n>lblTotModHoursCompleted}"/>
+																			<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours_comp}" required="true" submit="onHoursCal"
+																				editable="{oTab2>/editable}">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="ModHourCompPerc" text="{i18n>lblModHourCompPerc}"/>
+																			<Input type="Number" editable="false" value="{oWithdrawal>/mod_hour_comp_perc}" required="true">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="WithdrwTyp" text="{i18n>lblWithdrwTyp}"/>
+																			<Text text="{oWithdrawal>/wthdrw_typ_txt}" emptyIndicatorMode="On">
+																				<layoutData>
+																					<layout:GridData span="L5 M5 S5"/>
+																				</layoutData>
+																			</Text>
+																		</f:content>
+																	</f:SimpleForm>
+																</Panel>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+													<f:FormContainer>
+														<f:FormElement>
+															<Panel width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																<headerToolbar>
+																	<OverflowToolbar active="false">
+																		<Title text="Finance Information"/>
+																		<ToolbarSpacer/>
+																	</OverflowToolbar>
+																</headerToolbar>
+																<f:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="6" labelSpanL="6" labelSpanM="6" labelSpanS="6"
+																	adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+																	singleContainerFullSize="false">
+																	<f:content>
+																		<Label labelFor="RFType" text="{i18n>lblRFType}"/>
+																		<Input type="Number" value="{oWithdrawal>/rf_type}" required="true" placeholder="RF Type" showValueHelp="true" valueHelpOnly="true"
+																			valueHelpRequest=".onF4RFType" editable="{oTab2>/editable}">
+																			<layoutData>
+																				<layout:GridData span="L3 M3 S3"/>
+																			</layoutData>
+																		</Input>
+																		<Label labelFor="TuitionFee" text="{i18n>lblTuitionFee}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/tuit_fee', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="PaidAmount" text="{i18n>lblPaidAmount}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/paid_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="OutstandingBal" text="{i18n>lblOutstandingBal}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/outstand_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="TUITRevrAmt" text="{i18n>lblTUITRevrAmt}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/tuit_revr_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="RFEntit" text="{i18n>lblRFEntit}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/rf_entit', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="RemainDebtAfterRevr" text="{i18n>lblRemainDebtAfterRevr}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/debt_after_revr', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																	</f:content>
+																</f:SimpleForm>
+															</Panel>
+														</f:FormElement>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+												<f:Form id="ACMOthInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" emptySpanXL="1" emptySpanL="1" emptySpanM="1"
+															emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel width="auto" backgroundDesign="Solid">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Information on other outstanding debts"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<Table id="ACMOutstandTab" growing="true" growingThreshold="5" enableBusyIndicator="true" alternateRowColors="true"
+																		items="{ path: 'outstandDebtTab>/', sorter: { path: 'course_code' } }" noDataText="Courses not found" class="sapUiNoContentPadding">
+																		<headerToolbar>
+																			<!--<OverflowToolbar>-->
+																			<!--<Title text="{i18n>lblProposedRefund}" level="H2"/>-->
+																			<!--	<ToolbarSpacer/>-->
+																			<!--</OverflowToolbar>-->
+																		</headerToolbar>
+																		<columns>
+																			<Column sortIndicator="Ascending">
+																				<Text text="Course Code"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Course Description"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Intake #"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Outstanding Debt"/>
+																			</Column>
+																		</columns>
+																		<items>
+																			<ColumnListItem vAlign="Middle">
+																				<cells></cells>
+																			</ColumnListItem>
+																		</items>
+																	</Table>
+																</Panel>
+															</f:FormElement>
+															<f:FormElement label="Remarks">
+																<!--<Label text="Remarks" labelFor="remarks">-->
+																<!--	<layoutData>-->
+																<!--		<layout:GridData span="L7 M7 S7" indentL="0"/>-->
+																<!--	</layoutData>-->
+																<!--</Label>-->
+																<f:fields>
+																	<TextArea placeholder="Enter Remarks.." rows="8" growing="true" growingMaxLines="20" width="100%" required="true"
+																		value="{oWithdrawal>/remarks}" editable="{oTab2>/editable}"/>
+																</f:fields>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+											</IconTabFilter>
+											<IconTabSeparator icon="sap-icon://process"/>
+											<IconTabFilter id="FOTabBar" key="3" icon="sap-icon://payment-approval" iconColor="Positive" text="FO" count="{oSTHeaderData>/days_fin}"
+												tooltip="{RFHeader>/days_apr2} days">
+												<f:Form id="FOFormInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+															singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Finance Proposal"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<f:Form class="sapUiNoContentPadding">
+																		<f:layout>
+																			<f:ResponsiveGridLayout labelSpanXL="6" labelSpanL="6" labelSpanM="6" labelSpanS="6" emptySpanXL="1" emptySpanL="1" emptySpanM="1"
+																				emptySpanS="1" columnsXL="2" columnsL="2" columnsM="2" singleContainerFullSize="false"/>
+																		</f:layout>
+																		<f:FormContainer>
+																			<f:formElements>
+																				<f:FormElement label="{i18n>lblApplyDate}">
+																					<DatePicker placeholder="Date required" value="{oWithdrawal>/sydate}" textAlign="Left" displayFormat="long" secondaryCalendarType="Islamic"
+																						required="true" valueFormat="yyyy-MM-dd" editable="{oTab3>/editable}">
+																						<layoutData>
+																							<layout:GridData span="L4 M4 S4"/>
+																						</layoutData>
+																					</DatePicker>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblTotModHours}">
+																					<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours}" required="true" editable="{oTab3>/editable}">
+																						<layoutData>
+																							<layout:GridData span="L2 M2 S2"/>
+																						</layoutData>
+																					</Input>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblTotModHoursCompleted}">
+																					<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours_comp}" required="true" submit="onHoursCal"
+																						editable="{oTab3>/editable}">
+																						<layoutData>
+																							<layout:GridData span="L2 M2 S2"/>
+																						</layoutData>
+																					</Input>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblModHourCompPerc}">
+																					<Input type="Number" editable="false" value="{oWithdrawal>/mod_hour_comp_perc}" required="true">
+																						<layoutData>
+																							<layout:GridData span="L2 M2 S2"/>
+																						</layoutData>
+																					</Input>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblWithdrwTyp}">
+																					<Text text="{oWithdrawal>/wthdrw_typ_txt}" emptyIndicatorMode="On"/>
+																				</f:FormElement>
+																			</f:formElements>
+																		</f:FormContainer>
+																		<f:FormContainer>
+																			<f:formElements>
+																				<f:FormElement label="{i18n>lblRFType}">
+																					<Input type="Number" value="{oWithdrawal>/rf_type}" required="true" placeholder="RF Type" showValueHelp="true" valueHelpOnly="true"
+																						valueHelpRequest=".onF4RFType" editable="{oTab3>/editable}">
+																						<layoutData>
+																							<layout:GridData span="L3 M3 S3"/>
+																						</layoutData>
+																					</Input>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblTuitionFee}">
+																					<Input
+																						value="{ parts: ['oWithdrawal>/tuit_fee', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																						editable="{oTab3>/editable}"/>
+																					<!--<Label text="{oWithdrawal>/waers}"/>-->
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblPaidAmount}">
+																					<Input
+																						value="{ parts: ['oWithdrawal>/paid_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																						editable="{oTab3>/editable}"/>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblOutstandingBal}">
+																					<Input
+																						value="{ parts: ['oWithdrawal>/outstand_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																						editable="{oTab3>/editable}"/>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblTUITRevrAmt}">
+																					<Input
+																						value="{ parts: ['oWithdrawal>/tuit_revr_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																						editable="{oTab3>/editable}"/>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblRFEntit}">
+																					<Input
+																						value="{ parts: ['oWithdrawal>/rf_entit', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false, currencyCode : true } }"
+																						editable="{oTab3>/editable}"/>
+																				</f:FormElement>
+																				<f:FormElement label="{i18n>lblRemainDebtAfterRevr}">
+																					<Input
+																						value="{ parts: ['oWithdrawal>/debt_after_revr', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																						editable="{oTab3>/editable}"/>
+																				</f:FormElement>
+																			</f:formElements>
+																		</f:FormContainer>
+																	</f:Form>
+																</Panel>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+												<f:Form id="FOOthInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" emptySpanXL="1" emptySpanL="1" emptySpanM="1"
+															emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel width="auto" backgroundDesign="Solid">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Information on other outstanding debts"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<Table id="FOOutstandTab" growing="true" growingThreshold="5" enableBusyIndicator="true" alternateRowColors="true"
+																		items="{ path: 'outstandDebtTab>/', sorter: { path: 'course_code' } }" noDataText="Courses not found" class="sapUiNoContentPadding">
+																		<headerToolbar>
+																			<!--<OverflowToolbar>-->
+																			<!--<Title text="{i18n>lblProposedRefund}" level="H2"/>-->
+																			<!--	<ToolbarSpacer/>-->
+																			<!--</OverflowToolbar>-->
+																		</headerToolbar>
+																		<columns>
+																			<Column sortIndicator="Ascending">
+																				<Text text="Course Code"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Course Description"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Intake #"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Outstanding Debt"/>
+																			</Column>
+																		</columns>
+																		<items>
+																			<ColumnListItem vAlign="Middle">
+																				<cells></cells>
+																			</ColumnListItem>
+																		</items>
+																	</Table>
+																</Panel>
+															</f:FormElement>
+															<f:FormElement label="Remarks">
+																<!--<Label text="Remarks" labelFor="remarks">-->
+																<!--	<layoutData>-->
+																<!--		<layout:GridData span="L7 M7 S7" indentL="0"/>-->
+																<!--	</layoutData>-->
+																<!--</Label>-->
+																<f:fields>
+																	<TextArea placeholder="Enter Remarks.." rows="8" growing="true" growingMaxLines="20" width="100%" required="true"
+																		value="{oWithdrawal>/remarks}" editable="{oTab3>/editable}"/>
+																</f:fields>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+											</IconTabFilter>
+											<IconTabSeparator icon="sap-icon://process"/>
+											<IconTabFilter id="CashTabBar" key="4" icon="sap-icon://study-leave" iconColor="Negative" text="Cashier" count="{oSTHeaderData>/days_cas}"
+												tooltip="{RFHeader>/days_rgo} days">
+												<f:Form id="CashFormInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="2" columnsL="2" columnsM="2"
+															singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Academic Information"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<f:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="7" labelSpanL="7" labelSpanM="7" labelSpanS="7"
+																		adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+																		singleContainerFullSize="false">
+																		<f:content>
+																			<Label labelFor="sydatum" text="{i18n>lblApplyDate}"/>
+																			<DatePicker placeholder="Date required" value="{oWithdrawal>/sydate}" textAlign="Left" displayFormat="long" secondaryCalendarType="Islamic"
+																				required="true" valueFormat="yyyy-MM-dd" editable="{oTab4>/editable}">
+																				<layoutData>
+																					<layout:GridData span="L4 M4 S4"/>
+																				</layoutData>
+																			</DatePicker>
+																			<Label labelFor="TotModHours" text="{i18n>lblTotModHours}"/>
+																			<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours}" required="true" editable="{oTab4>/editable}">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="TotModHoursCompleted" text="{i18n>lblTotModHoursCompleted}"/>
+																			<Input type="Number" placeholder="Hours" value="{oWithdrawal>/tot_mod_hours_comp}" required="true" submit="onHoursCal"
+																				editable="{oTab4>/editable}">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="ModHourCompPerc" text="{i18n>lblModHourCompPerc}"/>
+																			<Input type="Number" editable="false" value="{oWithdrawal>/mod_hour_comp_perc}" required="true">
+																				<layoutData>
+																					<layout:GridData span="L2 M2 S2"/>
+																				</layoutData>
+																			</Input>
+																			<Label labelFor="WithdrwTyp" text="{i18n>lblWithdrwTyp}"/>
+																			<Text text="{oWithdrawal>/wthdrw_typ_txt}" emptyIndicatorMode="On">
+																				<layoutData>
+																					<layout:GridData span="L5 M5 S5"/>
+																				</layoutData>
+																			</Text>
+																		</f:content>
+																	</f:SimpleForm>
+																</Panel>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+													<f:FormContainer>
+														<f:FormElement>
+															<Panel width="auto" backgroundDesign="Solid" class="sapUiNoContentPadding">
+																<headerToolbar>
+																	<OverflowToolbar active="false">
+																		<Title text="Finance Information"/>
+																		<ToolbarSpacer/>
+																	</OverflowToolbar>
+																</headerToolbar>
+																<f:SimpleForm editable="false" layout="ResponsiveGridLayout" labelSpanXL="6" labelSpanL="6" labelSpanM="6" labelSpanS="6"
+																	adjustLabelSpan="false" emptySpanXL="1" emptySpanL="1" emptySpanM="1" emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1"
+																	singleContainerFullSize="false">
+																	<f:content>
+																		<Label labelFor="RFType" text="{i18n>lblRFType}"/>
+																		<Input type="Number" value="{oWithdrawal>/rf_type}" required="true" placeholder="RF Type" showValueHelp="true" valueHelpOnly="true"
+																			valueHelpRequest=".onF4RFType" editable="{oTab4>/editable}">
+																			<layoutData>
+																				<layout:GridData span="L3 M3 S3"/>
+																			</layoutData>
+																		</Input>
+																		<Label labelFor="TuitionFee" text="{i18n>lblTuitionFee}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/tuit_fee', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="PaidAmount" text="{i18n>lblPaidAmount}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/paid_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="OutstandingBal" text="{i18n>lblOutstandingBal}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/outstand_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="TUITRevrAmt" text="{i18n>lblTUITRevrAmt}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/tuit_revr_amt', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="RFEntit" text="{i18n>lblRFEntit}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/rf_entit', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																		<Label labelFor="RemainDebtAfterRevr" text="{i18n>lblRemainDebtAfterRevr}"/>
+																		<Text
+																			text="{ parts: ['oWithdrawal>/debt_after_revr', 'oWithdrawal>/waers'], type: 'sap.ui.model.type.Currency', formatOptions: { preserveDecimals : false } }"
+																			emptyIndicatorMode="On">
+																			<layoutData>
+																				<layout:GridData span="L4 M4 S4"/>
+																			</layoutData>
+																		</Text>
+																	</f:content>
+																</f:SimpleForm>
+															</Panel>
+														</f:FormElement>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+												<f:Form id="CashOthInfo" class="sapUiNoContentPadding">
+													<f:layout>
+														<f:ResponsiveGridLayout labelSpanXL="12" labelSpanL="12" labelSpanM="12" labelSpanS="12" emptySpanXL="1" emptySpanL="1" emptySpanM="1"
+															emptySpanS="1" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false"/>
+													</f:layout>
+													<f:FormContainer>
+														<f:formElements>
+															<f:FormElement>
+																<Panel width="auto" backgroundDesign="Solid">
+																	<headerToolbar>
+																		<OverflowToolbar active="false">
+																			<Title text="Information on other outstanding debts"/>
+																			<ToolbarSpacer/>
+																		</OverflowToolbar>
+																	</headerToolbar>
+																	<Table id="CashOutstandTab" growing="true" growingThreshold="5" enableBusyIndicator="true" alternateRowColors="true"
+																		items="{ path: 'outstandDebtTab>/', sorter: { path: 'course_code' } }" noDataText="Courses not found" class="sapUiNoContentPadding">
+																		<headerToolbar>
+																			<!--<OverflowToolbar>-->
+																			<!--<Title text="{i18n>lblProposedRefund}" level="H2"/>-->
+																			<!--	<ToolbarSpacer/>-->
+																			<!--</OverflowToolbar>-->
+																		</headerToolbar>
+																		<columns>
+																			<Column sortIndicator="Ascending">
+																				<Text text="Course Code"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Course Description"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Intake #"/>
+																			</Column>
+																			<Column minScreenWidth="Tablet" demandPopin="true" hAlign="Begin">
+																				<Text text="Outstanding Debt"/>
+																			</Column>
+																		</columns>
+																		<items>
+																			<ColumnListItem vAlign="Middle">
+																				<cells></cells>
+																			</ColumnListItem>
+																		</items>
+																	</Table>
+																</Panel>
+															</f:FormElement>
+															<f:FormElement label="Remarks">
+																<!--<Label text="Remarks" labelFor="remarks">-->
+																<!--	<layoutData>-->
+																<!--		<layout:GridData span="L7 M7 S7" indentL="0"/>-->
+																<!--	</layoutData>-->
+																<!--</Label>-->
+																<f:fields>
+																	<TextArea placeholder="Enter Remarks.." rows="8" growing="true" growingMaxLines="20" width="100%" required="true"
+																		value="{oWithdrawal>/remarks}"/>
+																</f:fields>
+															</f:FormElement>
+														</f:formElements>
+													</f:FormContainer>
+												</f:Form>
+												<!---->
+												<!---->
+											</IconTabFilter>
+										</items>
+									</IconTabBar>
+									<!--<semantic:positiveAction>-->
+									<!--<semantic:PositiveAction id="Approve" text="Approve" press="onAction"/>-->
+									<!--</semantic:positiveAction>-->
+									<!--<semantic:negativeAction>-->
+									<!--<semantic:NegativeAction id="Reject" text="Reject" press="onAction"/>-->
+									<!--</semantic:negativeAction>-->
+									<semantic:customFooterContent>
+										<Button id="Approve" type="Accept" text="Approve" press="onAction"></Button>
+										<Button id="Reject" type="Reject" text="Reject" press="onAction"></Button>
+										<Button id="Save" type="Default" text="Save" press="onAction"></Button>
+										<!--	<OverflowToolbarButton icon="sap-icon://settings" text="Settings" press="onPress"/>-->
+										<!--	<OverflowToolbarButton icon="sap-icon://video" text="Video" press="onPress"/>-->
+									</semantic:customFooterContent>
+									<!--<semantic:customShareMenuContent>-->
+									<!--	<Button text="CustomShareBtn1" icon="sap-icon://color-fill" press="onPress"/>-->
+									<!--	<Button text="CustomShareBtn2" icon="sap-icon://crop" press="onPress"/>-->
+									<!--</semantic:customShareMenuContent>-->
+								</semantic:DetailPage>
+								<semantic:DetailPage id="DetailPageMessage" enableScrolling="true" floatingFooter="false"
+									class="sapUiResponsivePadding--header sapUiResponsivePadding--content sapUiResponsivePadding--footer sapUiResponsivePadding--floatingFooter">
+									<MessagePage text="SPCE Fee Refund Managment" description="Please check your pending list&#xA;This application is only for UCA officials"
+										showHeader="false" icon="sap-icon://decision"/>
+								</semantic:DetailPage>
+								<!---->
+							</u:content>
+						</u:SplitContainer>
+					</content>
+				</Page>
+			</pages>
+		</App>
+	</Shell>
+</mvc:View>
