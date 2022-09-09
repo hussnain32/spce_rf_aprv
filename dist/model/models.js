@@ -1,0 +1,1 @@
+sap.ui.define(["sap/ui/model/json/JSONModel","sap/ui/Device","ZSPCE_RF_APRV/ZSPCE_RF_APRV/utils/dataManager"],function(e,a,n){"use strict";return{createDeviceModel:function(){var n=new e(a);n.setDefaultBindingMode("OneWay");return n},initModel:function(){var e="/sap/opu/odata/sap/zslcm_refund_srv/";var a=new sap.ui.model.odata.ODataModel(e,true);n.init(a)}}});

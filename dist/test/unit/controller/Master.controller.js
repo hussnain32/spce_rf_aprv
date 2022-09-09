@@ -1,0 +1,1 @@
+sap.ui.define(["ZSPCE_RF_APRV/ZSPCE_RF_APRV/controller/Master.controller"],function(t){"use strict";QUnit.module("Master Controller");QUnit.test("I should test the Master controller",function(e){var n=new t;n.onInit();e.ok(n)})});
